@@ -45,7 +45,8 @@
   @media (max-width:640px){.ring{left:auto;right:8px;top:8%;width:110px;height:110px}}
   .serial{position:absolute;right:20px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;white-space:nowrap;display:none;text-transform:none}
   @media (min-width:900px){.serial{display:block}}
-  .note{position:relative;width:min(100%,400px);background:var(--cream);background-image:repeating-linear-gradient(180deg,transparent 0 31px,var(--paper-line) 31px 32px);padding:36px 26px 30px;box-shadow:rgba(0,0,0,.55) 0 30px 60px -10px;transform:rotate(-1.2deg);font-family:"Caveat",cursive;color:var(--ink);transform-origin:50% 0}
+  .notewrap{width:min(100%,400px);will-change:transform}
+  .note{position:relative;width:100%;background:var(--cream);background-image:repeating-linear-gradient(180deg,transparent 0 31px,var(--paper-line) 31px 32px);padding:36px 26px 30px;box-shadow:rgba(0,0,0,.55) 0 30px 60px -10px;transform:rotate(-1.2deg);font-family:"Caveat",cursive;color:var(--ink);transform-origin:50% 0}
   .tape{position:absolute;top:-12px;left:50%;width:110px;height:26px;transform:translateX(-50%) rotate(-2deg);background:rgba(255,255,255,.5);box-shadow:0 1px 2px rgba(0,0,0,.12);overflow:hidden}
   .tape::after{content:"";position:absolute;top:0;bottom:0;width:30px;left:-40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent)}
   .note p{margin:0 0 .45em;font-size:clamp(20px,5vw,25px);font-weight:500;line-height:1.14}
@@ -54,7 +55,7 @@
   .note .w{display:block}
   .pen{position:absolute;width:30px;height:30px;pointer-events:none;opacity:0;transform:translate(-4px,-24px) rotate(-30deg);z-index:2}
   .pen svg{width:30px;height:30px;display:block}
-  .scrollcue{position:absolute;bottom:24px;left:24px;transition:opacity .3s}
+  .scrollcue{position:absolute;top:calc(100vh - 40px);top:calc(100svh - 40px);left:24px;transition:opacity .3s}
 
   /* The ask: display type stacked as a block, the one filled pill. */
   .cta-wrap{text-align:left;padding:120px 24px 40px;position:relative;max-width:1100px;margin:0 auto}
@@ -80,7 +81,7 @@
     .void .copy p{font-size:26px}
   }
   .stage{perspective:1100px;display:grid;place-items:center;min-height:300px}
-  .file{position:relative;width:min(56vw,220px);aspect-ratio:3/4;background:var(--cream);color:var(--ink);padding:18px 16px;transform-style:preserve-3d;will-change:transform;clip-path:polygon(0 0,calc(100% - 30px) 0,100% 30px,100% 100%,0 100%);background-image:linear-gradient(200deg,rgba(255,255,255,.55),rgba(16,9,4,0) 45%,rgba(16,9,4,.12))}
+  .file{position:relative;width:min(56vw,220px);aspect-ratio:3/4;background:var(--cream);color:var(--ink);padding:18px 16px;transform:rotateY(-14deg) rotateX(6deg);transform-style:preserve-3d;will-change:transform;clip-path:polygon(0 0,calc(100% - 30px) 0,100% 30px,100% 100%,0 100%);background-image:linear-gradient(200deg,rgba(255,255,255,.55),rgba(16,9,4,0) 45%,rgba(16,9,4,.12))}
   .file::before{content:"";position:absolute;top:0;right:0;width:30px;height:30px;background:linear-gradient(225deg,var(--walnut) 50%,rgba(16,9,4,.28) 50%)}
   .file .label{color:var(--ink);text-transform:none}
   .file .lines{margin-top:16px;display:grid;gap:10px}
@@ -153,7 +154,6 @@
     .note .w{clip-path:none!important}
     .pen,.scrollcue,.pill,.cursor{display:none}
     .drawer .panel{transform:none}
-    .file{transform:rotateY(-14deg) rotateX(6deg)}
   }
   @media (pointer:fine){body.inkcursor,body.inkcursor a,body.inkcursor button,body.inkcursor .tip{cursor:none}}
 </style>
@@ -174,6 +174,7 @@
 <section class="cathedral" id="cathedral">
   <span class="ring" aria-hidden="true"></span>
   <span class="serial label dim" aria-hidden="true">One file · CLAUDE.md</span>
+  <div class="notewrap" id="notewrap">
   <article class="note" id="note" aria-label="A note left on the counter">
     <span class="tape" aria-hidden="true"></span>
     <p class="big"><span class="w" data-w>Hi. I'm the new hire.</span></p>
@@ -185,6 +186,7 @@
     <p class="sig"><span class="w" data-w>— Squires <span style="font-weight:500;font-size:.78em">(call me what you like)</span></span></p>
     <span class="pen" id="pen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21l3.5-1 11-11-2.5-2.5-11 11L3 21z" fill="#382416"/><path d="M15 6.5l2.5 2.5 2-2a1.8 1.8 0 0 0 0-2.5 1.8 1.8 0 0 0-2.5 0l-2 2z" fill="#382416"/></svg></span>
   </article>
+  </div>
   <span class="scrollcue label dim" id="cue">Scroll to write. Scroll back to unwrite.</span>
 </section>
 
@@ -281,24 +283,27 @@
       G.registerPlugin(ScrollTrigger);ScrollTrigger.config({ignoreMobileResize:true});
       /* The pen writes the note as you scroll. The first line is written on load, so the page is never blank; pull back and it unwrites. */
       var lens=ws.map(function(w){return w.textContent.length}),total=lens.slice(1).reduce(function(a,b){return a+b},0);
-      var st={p:0};
+      var st={p:0},wrap=document.getElementById("notewrap");
       function paint(){
         var acc=0,budget=st.p*total;
         var nr=note.getBoundingClientRect();
-        var penPlaced=false;
+        var penPlaced=false,penY=0;
         for(var i=1;i<ws.length;i++){
           var el=ws[i],L=lens[i],k=Math.max(0,Math.min(1,(budget-acc)/L));acc+=L;
           el.style.clipPath="inset(0 "+((1-k)*100).toFixed(2)+"% 0 0)";
-          if(!penPlaced&&k>0&&k<1){var r=el.getBoundingClientRect();pen.style.left=(r.left-nr.left+k*r.width)+"px";pen.style.top=(r.top-nr.top+r.height*(0.15+0.75*k))+"px";penPlaced=true}
+          if(!penPlaced&&k>0&&k<1){var r=el.getBoundingClientRect();pen.style.left=(r.left-nr.left+k*r.width)+"px";pen.style.top=(r.top-nr.top+r.height*(0.15+0.75*k))+"px";penY=r.top-nr.top+r.height*(0.15+0.75*k);penPlaced=true}
         }
         pen.style.opacity=penPlaced?"1":"0";
         cue.style.opacity=st.p>.02?"0":"1";
+        /* Camera: if the note is taller than the screen, slide it so the line being written sits mid-screen. */
+        var vh=window.innerHeight,nh=note.offsetHeight,top=wrap.offsetTop,over=top+nh+24-vh;
+        if(over>0){if(!penPlaced)penY=st.p<=0?40:nh;var shift=Math.max(-over,Math.min(0,vh*.55-(top+penY)));wrap.style.transform="translateY("+shift.toFixed(1)+"px)"}else if(wrap.style.transform){wrap.style.transform=""}
       }
       G.set(ws.slice(1),{clipPath:"inset(0 100% 0 0)"});
       G.fromTo(ws[0],{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:1.1,ease:"none",delay:.3});
-      /* If the note is taller than the screen, pin from its bottom edge so the whole note is on screen while the pen writes. */
+      /* Pinned from the top; when the note is taller than the screen, paint() slides it so the writing stays in view. */
       var cath=document.getElementById("cathedral");
-      ScrollTrigger.create({trigger:cath,start:function(){return cath.offsetHeight>window.innerHeight?"bottom bottom":"top top"},end:"+=260%",pin:true,pinSpacing:true,scrub:.35,anticipatePin:1,invalidateOnRefresh:true,onUpdate:function(s){st.p=s.progress;paint()}});
+      ScrollTrigger.create({trigger:cath,start:"top top",end:"+=260%",pin:true,pinSpacing:true,scrub:.35,anticipatePin:1,invalidateOnRefresh:true,onUpdate:function(s){st.p=s.progress;paint()}});
       paint();
 
       /* The ask is the headline: each letter thickens from thin to medium as it lands. */
@@ -334,6 +339,8 @@
         document.addEventListener("pointerleave",function(){cur.style.opacity="0"});
       }
     }
+
+    if(!(G&&window.ScrollTrigger)){cue.style.display="none";document.getElementById("pen").style.display="none"}
 
     /* Drawer: what's in the folder. */
     var drawer=document.getElementById("drawer"),panel=document.getElementById("dpanel"),closeBtn=document.getElementById("close"),last=null;
