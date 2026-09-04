@@ -19,7 +19,7 @@
   }
   *{box-sizing:border-box}
   html{background:var(--walnut);overflow-x:clip}
-  body{margin:0;background:var(--walnut);color:var(--cream);font-family:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.4;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body{margin:0;background:var(--walnut);color:var(--cream);font-family:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.4;-webkit-font-smoothing:antialiased;overflow-x:clip}
   a{color:inherit}
   .label{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;line-height:1.1;color:var(--cream)}
   .label.dim{color:var(--cream-70)}
@@ -42,7 +42,7 @@
   .cathedral{min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:80px 20px 72px;position:relative;background:var(--walnut);overflow-x:clip}
   .ring{position:absolute;width:150px;height:150px;border-radius:50%;border:9px solid rgba(255,237,215,.07);left:calc(50% + 150px);top:20%;pointer-events:none}
   .ring::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px solid rgba(255,237,215,.05)}
-  @media (max-width:640px){.ring{left:auto;right:-40px;top:8%}}
+  @media (max-width:640px){.ring{left:auto;right:8px;top:8%;width:110px;height:110px}}
   .serial{position:absolute;right:20px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;white-space:nowrap;display:none;text-transform:none}
   @media (min-width:900px){.serial{display:block}}
   .note{position:relative;width:min(100%,400px);background:var(--cream);background-image:repeating-linear-gradient(180deg,transparent 0 31px,var(--paper-line) 31px 32px);padding:36px 26px 30px;box-shadow:rgba(0,0,0,.55) 0 30px 60px -10px;transform:rotate(-1.2deg);font-family:"Caveat",cursive;color:var(--ink);transform-origin:50% 0}
@@ -112,7 +112,8 @@
   .tip .card{display:none;position:absolute;left:var(--tx,0px);bottom:calc(100% + 12px);width:min(300px,80vw);background:rgba(56,36,22,.92);color:var(--cream);border:1px solid var(--cork);border-radius:var(--card);padding:16px;font-size:15px;line-height:1.35;font-weight:400;z-index:5;text-align:left}
   .tip .card .label{display:block;margin-bottom:10px}
   .tip .card .dash{margin:0 0 10px;border-top-color:rgba(255,237,215,.3)}
-  .tip:hover .card,.tip:focus .card,.tip.on .card{display:block}
+  .tip:focus .card,.tip.on .card{display:block}
+  @media (hover:hover){.tip:hover .card{display:block}}
 
   /* Sticky pill: appears only when you scroll back up. */
   .pill{position:fixed;left:50%;bottom:18px;transform:translate(-50%,200%);background:var(--bark);color:var(--cream);border-radius:var(--pill);padding:8px 8px 8px 20px;display:flex;align-items:center;gap:16px;font-size:14px;z-index:8;white-space:nowrap}
@@ -122,8 +123,8 @@
   /* Drawer: the real folder, on the elevated surface. */
   .drawer{position:fixed;inset:0;display:none;z-index:40}
   .drawer.open{display:block}
-  .drawer .bg{position:absolute;inset:0;background:rgba(16,9,4,.6)}
-  .drawer .panel{position:absolute;right:0;top:0;bottom:0;width:min(440px,92vw);background:var(--bark);padding:28px 24px;overflow:auto;transform:translateX(100%);border-left:1px dashed var(--cork)}
+  .drawer .bg{position:absolute;inset:0;background:rgba(16,9,4,.6);touch-action:none}
+  .drawer .panel{position:absolute;right:0;top:0;bottom:0;width:min(440px,92vw);background:var(--bark);padding:28px 24px;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;transform:translateX(100%);border-left:1px dashed var(--cork)}
   .drawer h2{font-size:24px;line-height:1.09;margin:0 0 8px}
   .drawer .intro{font-size:15px;color:var(--cream-70);margin:0 0 20px;padding-bottom:20px;border-bottom:1px dashed rgba(255,237,215,.25)}
   .tree{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.5;color:var(--cream);margin:0;padding:0;list-style:none}
@@ -154,7 +155,7 @@
     .drawer .panel{transform:none}
     .file{transform:rotateY(-14deg) rotateX(6deg)}
   }
-  @media (pointer:fine){body.inkcursor,body.inkcursor a,body.inkcursor button{cursor:none}}
+  @media (pointer:fine){body.inkcursor,body.inkcursor a,body.inkcursor button,body.inkcursor .tip{cursor:none}}
 </style>
 </head>
 <body>
@@ -277,7 +278,7 @@
     var ws=Array.prototype.slice.call(document.querySelectorAll("[data-w]")),pen=document.getElementById("pen"),note=document.getElementById("note"),cue=document.getElementById("cue");
 
     if(G&&window.ScrollTrigger){
-      G.registerPlugin(ScrollTrigger);
+      G.registerPlugin(ScrollTrigger);ScrollTrigger.config({ignoreMobileResize:true});
       /* The pen writes the note as you scroll. The first line is written on load, so the page is never blank; pull back and it unwrites. */
       var lens=ws.map(function(w){return w.textContent.length}),total=lens.slice(1).reduce(function(a,b){return a+b},0);
       var st={p:0};
@@ -301,8 +302,8 @@
       paint();
 
       /* The ask is the headline: each letter thickens from thin to medium as it lands. */
-      var h1=document.getElementById("h1"),txt=h1.textContent;h1.textContent="";
-      txt.split(" ").forEach(function(word,i){if(i)h1.appendChild(document.createTextNode(" "));var w=document.createElement("span");w.className="word";word.split("").forEach(function(ch){var s=document.createElement("span");s.className="l";s.textContent=ch;w.appendChild(s)});h1.appendChild(w)});
+      var h1=document.getElementById("h1"),txt=h1.textContent;h1.textContent="";h1.setAttribute("aria-label",txt);
+      txt.split(" ").forEach(function(word,i){if(i)h1.appendChild(document.createTextNode(" "));var w=document.createElement("span");w.className="word";w.setAttribute("aria-hidden","true");word.split("").forEach(function(ch){var s=document.createElement("span");s.className="l";s.textContent=ch;w.appendChild(s)});h1.appendChild(w)});
       G.fromTo("#h1 .l",{fontVariationSettings:'"wght" 300'},{fontVariationSettings:'"wght" 500',duration:.7,stagger:.035,ease:"power2.out",scrollTrigger:{trigger:"#ask",start:"top 75%",toggleActions:"play none none reverse"}});
       /* Section headings arrive the same way, as one block. Readable thin, settled medium. */
       document.querySelectorAll("[data-h]").forEach(function(h){G.fromTo(h,{fontVariationSettings:'"wght" 300'},{fontVariationSettings:'"wght" 500',duration:.9,ease:"power2.out",scrollTrigger:{trigger:h,start:"top 80%",toggleActions:"play none none reverse"}})});
@@ -336,8 +337,9 @@
 
     /* Drawer: what's in the folder. */
     var drawer=document.getElementById("drawer"),panel=document.getElementById("dpanel"),closeBtn=document.getElementById("close"),last=null;
-    function openD(){last=this&&this.focus?this:document.activeElement;drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");if(G){G.fromTo(panel,{x:"100%"},{x:0,duration:.45,ease:"power3.out"})}else{panel.style.transform="none"}closeBtn.focus()}
-    function closeD(){function done(){drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");if(last)last.focus()}if(G){G.to(panel,{x:"100%",duration:.3,ease:"power3.in",onComplete:done})}else{done()}}
+    function setInert(on){Array.prototype.forEach.call(document.body.children,function(el){if(el!==drawer&&el.tagName!=="SCRIPT")el.inert=on})}
+    function openD(){last=this&&this.focus?this:document.activeElement;setInert(true);drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");if(G){G.fromTo(panel,{x:"100%"},{x:0,duration:.45,ease:"power3.out"})}else{panel.style.transform="none"}closeBtn.focus()}
+    function closeD(){function done(){setInert(false);drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");if(last)last.focus()}if(G){G.to(panel,{x:"100%",duration:.3,ease:"power3.in",onComplete:done})}else{done()}}
     document.getElementById("open").addEventListener("click",openD);document.getElementById("open2").addEventListener("click",openD);
     closeBtn.addEventListener("click",closeD);document.getElementById("dbg").addEventListener("click",closeD);
     document.addEventListener("keydown",function(e){
