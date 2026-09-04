@@ -18,17 +18,17 @@
     color-scheme:dark;
   }
   *{box-sizing:border-box}
-  html{background:var(--walnut);scroll-behavior:smooth}
+  html{background:var(--walnut);overflow-x:clip}
   body{margin:0;background:var(--walnut);color:var(--cream);font-family:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.4;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   a{color:inherit}
   .label{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;line-height:1.1;color:var(--cream)}
   .label.dim{color:var(--cream-70)}
   .h{font-weight:500;text-transform:uppercase;line-height:.9;margin:0;color:var(--cream);font-variation-settings:"wght" 500;text-wrap:balance}
   h2.h{font-size:clamp(30px,8vw,41px)}
-  .dash{border:0;border-top:1px dashed var(--cork);margin:0}
+  .dash{display:block;border:0;border-top:1px dashed var(--cork);margin:0}
 
   /* Fixed nav: wordmark left, four items right, dashed underline on the active one. */
-  .nav{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;pointer-events:none}
+  .nav{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:18px 24px 30px;pointer-events:none;background:linear-gradient(var(--walnut) 40%,rgba(16,9,4,0))}
   .nav>*{pointer-events:auto}
   .nav .mark{font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;text-decoration:none}
   .nav ul{list-style:none;margin:0;padding:0;display:none;gap:24px}
@@ -39,11 +39,11 @@
   @media (min-width:900px){.nav ul{display:flex}}
 
   /* The hero: void mode. The note is the object. */
-  .cathedral{min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:80px 20px 72px;position:relative;background:var(--walnut)}
+  .cathedral{min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:80px 20px 72px;position:relative;background:var(--walnut);overflow-x:clip}
   .ring{position:absolute;width:150px;height:150px;border-radius:50%;border:9px solid rgba(255,237,215,.07);left:calc(50% + 150px);top:20%;pointer-events:none}
   .ring::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px solid rgba(255,237,215,.05)}
   @media (max-width:640px){.ring{left:auto;right:-40px;top:8%}}
-  .serial{position:absolute;right:20px;top:50%;transform:rotate(90deg) translateX(-50%);transform-origin:right top;white-space:nowrap;display:none}
+  .serial{position:absolute;right:20px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;white-space:nowrap;display:none;text-transform:none}
   @media (min-width:900px){.serial{display:block}}
   .note{position:relative;width:min(100%,400px);background:var(--cream);background-image:repeating-linear-gradient(180deg,transparent 0 31px,var(--paper-line) 31px 32px);padding:36px 26px 30px;box-shadow:rgba(0,0,0,.55) 0 30px 60px -10px;transform:rotate(-1.2deg);font-family:"Caveat",cursive;color:var(--ink);transform-origin:50% 0}
   .tape{position:absolute;top:-12px;left:50%;width:110px;height:26px;transform:translateX(-50%) rotate(-2deg);background:rgba(255,255,255,.5);box-shadow:0 1px 2px rgba(0,0,0,.12);overflow:hidden}
@@ -59,7 +59,8 @@
   /* The ask: display type stacked as a block, the one filled pill. */
   .cta-wrap{text-align:left;padding:120px 24px 40px;position:relative;max-width:1100px;margin:0 auto}
   h1{font-family:"Figtree",sans-serif;font-weight:500;text-transform:uppercase;font-size:clamp(56px,15vw,132px);line-height:.9;letter-spacing:0;margin:0 0 28px;color:var(--cream)}
-  h1 span{display:inline-block;font-variation-settings:"wght" 500}
+  h1 .word{display:inline-block;white-space:nowrap}
+  h1 .l{display:inline-block;font-variation-settings:"wght" 500}
   .actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap)}
   .cta{display:inline-block;background:var(--bark);color:var(--cream);text-decoration:none;font-weight:500;text-transform:uppercase;letter-spacing:.04em;font-size:14px;padding:14px 24px;border-radius:var(--pill);will-change:transform}
   .cta:hover{background:#46301E}
@@ -81,7 +82,7 @@
   .stage{perspective:1100px;display:grid;place-items:center;min-height:300px}
   .file{position:relative;width:min(56vw,220px);aspect-ratio:3/4;background:var(--cream);color:var(--ink);padding:18px 16px;transform-style:preserve-3d;will-change:transform;clip-path:polygon(0 0,calc(100% - 30px) 0,100% 30px,100% 100%,0 100%);background-image:linear-gradient(200deg,rgba(255,255,255,.55),rgba(16,9,4,0) 45%,rgba(16,9,4,.12))}
   .file::before{content:"";position:absolute;top:0;right:0;width:30px;height:30px;background:linear-gradient(225deg,var(--walnut) 50%,rgba(16,9,4,.28) 50%)}
-  .file .label{color:var(--ink)}
+  .file .label{color:var(--ink);text-transform:none}
   .file .lines{margin-top:16px;display:grid;gap:10px}
   .file .lines i{display:block;height:0;border-top:1px dashed rgba(16,9,4,.32)}
   .file .lines i:nth-child(2){width:78%}.file .lines i:nth-child(4){width:64%}.file .lines i:nth-child(6){width:86%}.file .lines i:nth-child(8){width:40%}
@@ -90,9 +91,10 @@
 
   /* The ladder and the steps: dashed rows. */
   .rows{margin:32px 0 0;padding:0;list-style:none;border-top:1px dashed var(--cork)}
-  .rows li{display:grid;grid-template-columns:132px 1fr;gap:var(--gap);padding:16px 0;border-bottom:1px dashed var(--cork);align-items:baseline}
+  .rows li{display:grid;grid-template-columns:140px 1fr;gap:var(--gap);padding:16px 0;border-bottom:1px dashed var(--cork);align-items:baseline}
   .rows li p{margin:0;font-size:16px;color:var(--cream-70);line-height:1.35}
   .rows li .label.ember{color:var(--ember)}
+  @media (max-width:480px){.void .rows li{grid-template-columns:1fr;gap:6px}}
   .steps{max-width:1100px;margin:0 auto;padding:0 24px}
   .steps .rows{margin-top:56px}
   .steps .rows li{grid-template-columns:44px 1fr;padding:20px 0}
@@ -107,13 +109,13 @@
   /* Tooltip on "say go": the overlay info card. */
   .tip{position:relative;display:inline-block;color:var(--ember);border-bottom:1px dashed var(--ember);cursor:help}
   .tip:focus-visible{outline:2px solid var(--cream);outline-offset:2px;border-radius:2px}
-  .tip .card{position:absolute;left:0;bottom:calc(100% + 12px);transform:translateY(6px);width:min(300px,80vw);background:rgba(56,36,22,.92);color:var(--cream);border:1px solid var(--cork);border-radius:var(--card);padding:16px;font-size:15px;line-height:1.35;font-weight:400;opacity:0;pointer-events:none;z-index:5;text-align:left}
+  .tip .card{display:none;position:absolute;left:var(--tx,0px);bottom:calc(100% + 12px);width:min(300px,80vw);background:rgba(56,36,22,.92);color:var(--cream);border:1px solid var(--cork);border-radius:var(--card);padding:16px;font-size:15px;line-height:1.35;font-weight:400;z-index:5;text-align:left}
   .tip .card .label{display:block;margin-bottom:10px}
-  .tip .card hr{margin:0 0 10px}
-  .tip:hover .card,.tip:focus .card,.tip.on .card{opacity:1;transform:translateY(0);pointer-events:auto}
+  .tip .card .dash{margin:0 0 10px;border-top-color:rgba(255,237,215,.3)}
+  .tip:hover .card,.tip:focus .card,.tip.on .card{display:block}
 
   /* Sticky pill: appears only when you scroll back up. */
-  .pill{position:fixed;left:50%;bottom:18px;transform:translate(-50%,120%);background:var(--bark);color:var(--cream);border-radius:var(--pill);padding:8px 8px 8px 20px;display:flex;align-items:center;gap:16px;font-size:14px;z-index:8;white-space:nowrap}
+  .pill{position:fixed;left:50%;bottom:18px;transform:translate(-50%,200%);background:var(--bark);color:var(--cream);border-radius:var(--pill);padding:8px 8px 8px 20px;display:flex;align-items:center;gap:16px;font-size:14px;z-index:8;white-space:nowrap}
   .pill a{background:var(--cream);color:var(--walnut);text-decoration:none;border-radius:var(--pill);padding:9px 16px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
   .pill a:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 
@@ -133,18 +135,18 @@
   .drawer .close:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 
   .cursor{position:fixed;left:0;top:0;width:26px;height:26px;pointer-events:none;z-index:50;opacity:0;transform:translate(-3px,-23px) rotate(-30deg);mix-blend-mode:difference}
-  footer{max-width:1100px;margin:0 auto;padding:96px 24px 40px;display:flex;justify-content:space-between;gap:var(--gap);flex-wrap:wrap}
+  footer,footer.label{max-width:1100px;margin:0 auto;padding:96px 24px 40px;text-transform:none;letter-spacing:0;font-size:13px;display:flex;justify-content:space-between;gap:var(--gap);flex-wrap:wrap}
   footer a{text-decoration:underline;text-underline-offset:4px}
 
   @media (prefers-reduced-motion:no-preference){
-    .tip .card{transition:opacity .2s,transform .2s cubic-bezier(.2,.7,.2,1)}
+    .tip:hover .card,.tip:focus .card,.tip.on .card{animation:tipin .2s cubic-bezier(.2,.7,.2,1)}
     .tape::after{animation:glint 7s ease-in-out infinite}
     .note{animation:breathe 9s ease-in-out infinite}
   }
+  @keyframes tipin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   @keyframes glint{0%,82%{left:-40px}100%{left:130px}}
   @keyframes breathe{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(-1.5deg) translateY(1px)}}
   @media (prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto}
     .cathedral{min-height:0;padding:96px 20px 40px}
     .void{min-height:0}
     .note .w{clip-path:none!important}
@@ -209,7 +211,7 @@
 <section class="void two" id="go">
   <div class="lead"><span class="label dim">Trust</span><h2 class="h" data-h>It drafts. You say go.</h2></div>
   <div class="copy">
-    <p>Everything starts as a draft, and it acts only when you <span class="tip" tabindex="0" role="button" aria-describedby="tipc">say go<span class="card" id="tipc" role="tooltip"><span class="label">Go</span><hr class="dash">"Go" is a word you type in the conversation, for one item at a time. It is the only thing that turns a draft into a sent email, an updated record, or a paid invoice.</span></span>. After you've said go to the same thing a few times, you can tell it to just handle those. Money leaving never moves up that ladder.</p>
+    <p>Everything starts as a draft, and it acts only when you <span class="tip" tabindex="0" role="button" aria-describedby="tipc">say go<span class="card" id="tipc" role="tooltip"><span class="label">Go</span><span class="dash" aria-hidden="true"></span>"Go" is a word you type in the conversation, for one item at a time. It is the only thing that turns a draft into a sent email, an updated record, or a paid invoice.</span></span>. After you've said go to the same thing a few times, you can tell it to just handle those. Money leaving never moves up that ladder.</p>
     <ul class="rows" aria-label="The trust ladder">
       <li><span class="label">I ask</span><p>Every item starts as a draft. Nothing moves until you've read it.</p></li>
       <li><span class="label">You say go</span><p>One word, one item at a time. The only thing that sends, posts, or pays.</p></li>
@@ -292,7 +294,7 @@
         cue.style.opacity=st.p>.02?"0":"1";
       }
       G.set(ws.slice(1),{clipPath:"inset(0 100% 0 0)"});
-      G.from(ws[0],{clipPath:"inset(0 100% 0 0)",duration:1.1,ease:"none",delay:.3});
+      G.fromTo(ws[0],{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:1.1,ease:"none",delay:.3});
       /* If the note is taller than the screen, pin from its bottom edge so the whole note is on screen while the pen writes. */
       var cath=document.getElementById("cathedral");
       ScrollTrigger.create({trigger:cath,start:function(){return cath.offsetHeight>window.innerHeight?"bottom bottom":"top top"},end:"+=260%",pin:true,pinSpacing:true,scrub:.35,anticipatePin:1,invalidateOnRefresh:true,onUpdate:function(s){st.p=s.progress;paint()}});
@@ -300,8 +302,8 @@
 
       /* The ask is the headline: each letter thickens from thin to medium as it lands. */
       var h1=document.getElementById("h1"),txt=h1.textContent;h1.textContent="";
-      txt.split("").forEach(function(ch){var s=document.createElement("span");s.textContent=ch===" "?" ":ch;h1.appendChild(s)});
-      G.fromTo("#h1 span",{fontVariationSettings:'"wght" 300'},{fontVariationSettings:'"wght" 500',duration:.7,stagger:.035,ease:"power2.out",scrollTrigger:{trigger:"#ask",start:"top 75%",toggleActions:"play none none reverse"}});
+      txt.split(" ").forEach(function(word,i){if(i)h1.appendChild(document.createTextNode(" "));var w=document.createElement("span");w.className="word";word.split("").forEach(function(ch){var s=document.createElement("span");s.className="l";s.textContent=ch;w.appendChild(s)});h1.appendChild(w)});
+      G.fromTo("#h1 .l",{fontVariationSettings:'"wght" 300'},{fontVariationSettings:'"wght" 500',duration:.7,stagger:.035,ease:"power2.out",scrollTrigger:{trigger:"#ask",start:"top 75%",toggleActions:"play none none reverse"}});
       /* Section headings arrive the same way, as one block. Readable thin, settled medium. */
       document.querySelectorAll("[data-h]").forEach(function(h){G.fromTo(h,{fontVariationSettings:'"wght" 300'},{fontVariationSettings:'"wght" 500',duration:.9,ease:"power2.out",scrollTrigger:{trigger:h,start:"top 80%",toggleActions:"play none none reverse"}})});
 
@@ -313,12 +315,15 @@
       var links={};document.querySelectorAll("[data-nav]").forEach(function(a){links[a.getAttribute("data-nav")]=a});
       ["cathedral","file","go","folder"].forEach(function(id){ScrollTrigger.create({trigger:"#"+id,start:"top 50%",end:"bottom 50%",onToggle:function(s){if(s.isActive){for(var k in links)links[k].classList.toggle("on",k===id)}}})});
 
+      /* Nav links scroll smoothly; the fixed nav is transparent so nothing hides under it. */
+      document.querySelectorAll('.nav a[href^="#"],.pill a[href^="#"]').forEach(function(a){a.addEventListener("click",function(e){var t=document.querySelector(a.getAttribute("href"));if(!t||a.id==="pillcta")return;e.preventDefault();t.scrollIntoView({behavior:"smooth",block:"start"})})});
       /* Magnetic pill button. */
       var cta=document.getElementById("get"),mx=G.quickTo(cta,"x",{duration:.3,ease:"power3"}),my=G.quickTo(cta,"y",{duration:.3,ease:"power3"});
       /* Sticky pill: appears once the note is written and you scroll back up. */
-      var pill=document.getElementById("pill"),on=false;
-      ScrollTrigger.create({start:"top -120%",end:"max",onUpdate:function(s){var want=s.direction===-1;if(want!==on){on=want;pill.setAttribute("aria-hidden",want?"false":"true");G.to(pill,{y:want?0:"120%",xPercent:-50,duration:.35,ease:"power3.out"})}},onLeaveBack:function(){on=false;pill.setAttribute("aria-hidden","true");G.to(pill,{y:"120%",xPercent:-50,duration:.3})}});
-      G.set(pill,{xPercent:-50,y:"120%"});
+      var pill=document.getElementById("pill"),on=false,lastY=window.scrollY;
+      function setPill(want){if(want===on)return;on=want;pill.setAttribute("aria-hidden",want?"false":"true");document.getElementById("pillcta").tabIndex=want?0:-1;G.to(pill,{yPercent:want?0:200,duration:want?.35:.3,ease:"power3.out",overwrite:"auto"})}
+      G.set(pill,{xPercent:-50,yPercent:200,x:0,y:0});document.getElementById("pillcta").tabIndex=-1;
+      ScrollTrigger.create({start:"top -120%",end:"max",onUpdate:function(s){var y=window.scrollY,dy=y-lastY;if(Math.abs(dy)<8)return;lastY=y;setPill(dy<0)},onLeaveBack:function(){lastY=window.scrollY;setPill(false)},onLeave:function(){setPill(false)}});
       /* Ink cursor on fine pointers: the cursor is the pen. */
       var cur=document.getElementById("cur"),cx=G.quickTo(cur,"x",{duration:.18,ease:"power3"}),cy=G.quickTo(cur,"y",{duration:.18,ease:"power3"});
       if(window.matchMedia("(pointer:fine)").matches){
@@ -331,13 +336,23 @@
 
     /* Drawer: what's in the folder. */
     var drawer=document.getElementById("drawer"),panel=document.getElementById("dpanel"),closeBtn=document.getElementById("close"),last=null;
-    function openD(){last=document.activeElement;drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");if(G){G.fromTo(panel,{x:"100%"},{x:0,duration:.45,ease:"power3.out"})}else{panel.style.transform="none"}closeBtn.focus()}
+    function openD(){last=this&&this.focus?this:document.activeElement;drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");if(G){G.fromTo(panel,{x:"100%"},{x:0,duration:.45,ease:"power3.out"})}else{panel.style.transform="none"}closeBtn.focus()}
     function closeD(){function done(){drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");if(last)last.focus()}if(G){G.to(panel,{x:"100%",duration:.3,ease:"power3.in",onComplete:done})}else{done()}}
     document.getElementById("open").addEventListener("click",openD);document.getElementById("open2").addEventListener("click",openD);
     closeBtn.addEventListener("click",closeD);document.getElementById("dbg").addEventListener("click",closeD);
-    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&drawer.classList.contains("open"))closeD()});
+    document.addEventListener("keydown",function(e){
+      if(e.key==="Escape"){if(drawer.classList.contains("open"))closeD();var t=document.querySelector(".tip.on");if(t){t.classList.remove("on");t.setAttribute("aria-expanded","false")}}
+      if(e.key==="Tab"&&drawer.classList.contains("open")){var f=panel.querySelectorAll("button,[href],[tabindex]:not([tabindex='-1'])"),first=f[0],lastEl=f[f.length-1];
+        if(e.shiftKey&&document.activeElement===first){e.preventDefault();lastEl.focus()}else if(!e.shiftKey&&document.activeElement===lastEl){e.preventDefault();first.focus()}}
+    });
     /* Tooltip on touch: tap toggles. */
-    var tip=document.querySelector(".tip");tip.addEventListener("click",function(){tip.classList.toggle("on")});tip.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tip.classList.toggle("on")}});
+    var tip=document.querySelector(".tip"),card=tip.querySelector(".card");
+    function placeCard(){var vw=document.documentElement.clientWidth,r=tip.getBoundingClientRect(),w=Math.min(300,vw*.8),tx=Math.max(16-r.left,Math.min(0,vw-16-w-r.left));tip.style.setProperty("--tx",tx+"px")}
+    function setTip(on){tip.classList.toggle("on",on);tip.setAttribute("aria-expanded",on?"true":"false");if(on)placeCard()}
+    tip.setAttribute("aria-expanded","false");
+    tip.addEventListener("mouseenter",placeCard);tip.addEventListener("focus",placeCard);
+    tip.addEventListener("click",function(){setTip(!tip.classList.contains("on"))});
+    tip.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();setTip(!tip.classList.contains("on"))}});
 
     function soon(el){var o=el.textContent;el.textContent="Coming soon";setTimeout(function(){el.textContent=o},1600)}
     document.getElementById("get").addEventListener("click",function(e){e.preventDefault();soon(this)});
