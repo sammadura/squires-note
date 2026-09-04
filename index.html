@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Squires is one file. A new hire for your business that starts whenever you say hello.">
+<title>Squires Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Caveat:wght@500;700&display=swap">
+<style>
+  /* One note floating in warm darkness, written by your scroll. Four dark rooms after it. Cream type is the only decoration.
+     One lit world, painted explicitly for every viewer: walnut canvas, cream text. */
+  :root{
+    --walnut:#100904; --bark:#382416; --cork:#40372E; --cream:#FFEDD7; --ember:#DC5000; --ink:#1A0F07;
+    --cream-70:rgba(255,237,215,.70); --cream-55:rgba(255,237,215,.55); --paper-line:rgba(16,9,4,.13);
+    --pill:36px; --ghost:22.5px; --card:12px; --gap:18px;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--walnut);scroll-behavior:smooth}
+  body{margin:0;background:var(--walnut);color:var(--cream);font-family:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.4;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit}
+  .label{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;line-height:1.1;color:var(--cream)}
+  .label.dim{color:var(--cream-70)}
+  .h{font-weight:500;text-transform:uppercase;line-height:.9;margin:0;color:var(--cream);font-variation-settings:"wght" 500;text-wrap:balance}
+  h2.h{font-size:clamp(30px,8vw,41px)}
+  .dash{border:0;border-top:1px dashed var(--cork);margin:0}
+
+  /* Fixed nav: wordmark left, four items right, dashed underline on the active one. */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;pointer-events:none}
+  .nav>*{pointer-events:auto}
+  .nav .mark{font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;text-decoration:none}
+  .nav ul{list-style:none;margin:0;padding:0;display:none;gap:24px}
+  .nav ul a{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;padding-bottom:4px;border-bottom:1px dashed transparent}
+  .nav ul a:hover,.nav ul a.on{border-bottom-color:var(--cream)}
+  .nav .navcta{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;text-decoration:underline;text-underline-offset:4px}
+  .nav a:focus-visible{outline:2px solid var(--cream);outline-offset:4px;border-radius:2px}
+  @media (min-width:900px){.nav ul{display:flex}}
+
+  /* The hero: void mode. The note is the object. */
+  .cathedral{min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:80px 20px 72px;position:relative;background:var(--walnut)}
+  .ring{position:absolute;width:150px;height:150px;border-radius:50%;border:9px solid rgba(255,237,215,.07);left:calc(50% + 150px);top:20%;pointer-events:none}
+  .ring::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px solid rgba(255,237,215,.05)}
+  @media (max-width:640px){.ring{left:auto;right:-40px;top:8%}}
+  .serial{position:absolute;right:20px;top:50%;transform:rotate(90deg) translateX(-50%);transform-origin:right top;white-space:nowrap;display:none}
+  @media (min-width:900px){.serial{display:block}}
+  .note{position:relative;width:min(100%,400px);background:var(--cream);background-image:repeating-linear-gradient(180deg,transparent 0 31px,var(--paper-line) 31px 32px);padding:36px 26px 30px;box-shadow:rgba(0,0,0,.55) 0 30px 60px -10px;transform:rotate(-1.2deg);font-family:"Caveat",cursive;color:var(--ink);transform-origin:50% 0}
+  .tape{position:absolute;top:-12px;left:50%;width:110px;height:26px;transform:translateX(-50%) rotate(-2deg);background:rgba(255,255,255,.5);box-shadow:0 1px 2px rgba(0,0,0,.12);overflow:hidden}
+  .tape::after{content:"";position:absolute;top:0;bottom:0;width:30px;left:-40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent)}
+  .note p{margin:0 0 .45em;font-size:clamp(20px,5vw,25px);font-weight:500;line-height:1.14}
+  .note p.big{font-size:clamp(30px,7.6vw,38px);font-weight:700;line-height:1.02;margin:0 0 .4em}
+  .note p.sig{margin:.5em 0 0;font-weight:700;font-size:clamp(24px,5.6vw,29px)}
+  .note .w{display:block}
+  .pen{position:absolute;width:30px;height:30px;pointer-events:none;opacity:0;transform:translate(-4px,-24px) rotate(-30deg);z-index:2}
+  .pen svg{width:30px;height:30px;display:block}
+  .scrollcue{position:absolute;bottom:24px;left:24px;transition:opacity .3s}
+
+  /* The ask: display type stacked as a block, the one filled pill. */
+  .cta-wrap{text-align:left;padding:120px 24px 40px;position:relative;max-width:1100px;margin:0 auto}
+  h1{font-family:"Figtree",sans-serif;font-weight:500;text-transform:uppercase;font-size:clamp(56px,15vw,132px);line-height:.9;letter-spacing:0;margin:0 0 28px;color:var(--cream)}
+  h1 span{display:inline-block;font-variation-settings:"wght" 500}
+  .actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap)}
+  .cta{display:inline-block;background:var(--bark);color:var(--cream);text-decoration:none;font-weight:500;text-transform:uppercase;letter-spacing:.04em;font-size:14px;padding:14px 24px;border-radius:var(--pill);will-change:transform}
+  .cta:hover{background:#46301E}
+  .cta:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+  .link{all:unset;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;text-decoration:underline;text-underline-offset:4px;cursor:pointer;color:var(--cream)}
+  .link:focus-visible{outline:2px solid var(--cream);outline-offset:4px;border-radius:2px}
+  .sub{margin:24px 0 0;font-size:14px;color:var(--cream-70);max-width:52ch}
+
+  /* Void reveals: heading left, object centre, body right. Stacks on a phone. */
+  .void{display:grid;grid-template-columns:1fr;gap:40px var(--gap);padding:96px 24px;max-width:1100px;margin:0 auto;align-items:center}
+  .void .lead{display:flex;flex-direction:column;gap:14px}
+  .void .copy p{margin:0 0 20px;font-size:clamp(19px,5vw,24px);line-height:1.3;font-weight:400;color:var(--cream)}
+  .void .copy p:last-child{margin-bottom:0}
+  @media (min-width:900px){
+    .void{grid-template-columns:1fr minmax(240px,.9fr) 1fr;min-height:100svh;padding:140px 24px}
+    .void.two{grid-template-columns:1fr 1.4fr}
+    .void .copy p{font-size:26px}
+  }
+  .stage{perspective:1100px;display:grid;place-items:center;min-height:300px}
+  .file{position:relative;width:min(56vw,220px);aspect-ratio:3/4;background:var(--cream);color:var(--ink);padding:18px 16px;transform-style:preserve-3d;will-change:transform;clip-path:polygon(0 0,calc(100% - 30px) 0,100% 30px,100% 100%,0 100%);background-image:linear-gradient(200deg,rgba(255,255,255,.55),rgba(16,9,4,0) 45%,rgba(16,9,4,.12))}
+  .file::before{content:"";position:absolute;top:0;right:0;width:30px;height:30px;background:linear-gradient(225deg,var(--walnut) 50%,rgba(16,9,4,.28) 50%)}
+  .file .label{color:var(--ink)}
+  .file .lines{margin-top:16px;display:grid;gap:10px}
+  .file .lines i{display:block;height:0;border-top:1px dashed rgba(16,9,4,.32)}
+  .file .lines i:nth-child(2){width:78%}.file .lines i:nth-child(4){width:64%}.file .lines i:nth-child(6){width:86%}.file .lines i:nth-child(8){width:40%}
+  .file .foot{position:absolute;left:16px;bottom:16px;font-family:"Caveat",cursive;font-size:22px;font-weight:700;color:var(--ink)}
+  .ground{width:min(56vw,220px);height:22px;margin-top:22px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.6),rgba(0,0,0,0) 70%)}
+
+  /* The ladder and the steps: dashed rows. */
+  .rows{margin:32px 0 0;padding:0;list-style:none;border-top:1px dashed var(--cork)}
+  .rows li{display:grid;grid-template-columns:132px 1fr;gap:var(--gap);padding:16px 0;border-bottom:1px dashed var(--cork);align-items:baseline}
+  .rows li p{margin:0;font-size:16px;color:var(--cream-70);line-height:1.35}
+  .rows li .label.ember{color:var(--ember)}
+  .steps{max-width:1100px;margin:0 auto;padding:0 24px}
+  .steps .rows{margin-top:56px}
+  .steps .rows li{grid-template-columns:44px 1fr;padding:20px 0}
+  .steps .rows li p{font-size:18px;color:var(--cream)}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:15px;background:rgba(255,237,215,.1);padding:1px 7px;border-radius:4px}
+  .fine{max-width:1100px;margin:28px auto 0;padding:0 24px;font-family:Arial,system-ui,sans-serif;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.02em;color:var(--cream-70);line-height:1.5}
+  .fine span{border-bottom:1px dashed var(--cream-70)}
+  .ghost{all:unset;display:inline-block;border:1px solid var(--cream);border-radius:var(--ghost);padding:9px 18px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;color:var(--cream);margin-top:8px}
+  .ghost:hover{background:rgba(255,237,215,.08)}
+  .ghost:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+
+  /* Tooltip on "say go": the overlay info card. */
+  .tip{position:relative;display:inline-block;color:var(--ember);border-bottom:1px dashed var(--ember);cursor:help}
+  .tip:focus-visible{outline:2px solid var(--cream);outline-offset:2px;border-radius:2px}
+  .tip .card{position:absolute;left:0;bottom:calc(100% + 12px);transform:translateY(6px);width:min(300px,80vw);background:rgba(56,36,22,.92);color:var(--cream);border:1px solid var(--cork);border-radius:var(--card);padding:16px;font-size:15px;line-height:1.35;font-weight:400;opacity:0;pointer-events:none;z-index:5;text-align:left}
+  .tip .card .label{display:block;margin-bottom:10px}
+  .tip .card hr{margin:0 0 10px}
+  .tip:hover .card,.tip:focus .card,.tip.on .card{opacity:1;transform:translateY(0);pointer-events:auto}
+
+  /* Sticky pill: appears only when you scroll back up. */
+  .pill{position:fixed;left:50%;bottom:18px;transform:translate(-50%,120%);background:var(--bark);color:var(--cream);border-radius:var(--pill);padding:8px 8px 8px 20px;display:flex;align-items:center;gap:16px;font-size:14px;z-index:8;white-space:nowrap}
+  .pill a{background:var(--cream);color:var(--walnut);text-decoration:none;border-radius:var(--pill);padding:9px 16px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+  .pill a:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+
+  /* Drawer: the real folder, on the elevated surface. */
+  .drawer{position:fixed;inset:0;display:none;z-index:40}
+  .drawer.open{display:block}
+  .drawer .bg{position:absolute;inset:0;background:rgba(16,9,4,.6)}
+  .drawer .panel{position:absolute;right:0;top:0;bottom:0;width:min(440px,92vw);background:var(--bark);padding:28px 24px;overflow:auto;transform:translateX(100%);border-left:1px dashed var(--cork)}
+  .drawer h2{font-size:24px;line-height:1.09;margin:0 0 8px}
+  .drawer .intro{font-size:15px;color:var(--cream-70);margin:0 0 20px;padding-bottom:20px;border-bottom:1px dashed rgba(255,237,215,.25)}
+  .tree{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.5;color:var(--cream);margin:0;padding:0;list-style:none}
+  .tree li{padding:8px 0 8px calc(var(--d,0)*16px);white-space:nowrap;border-bottom:1px dashed rgba(255,237,215,.14)}
+  .tree li::before{content:"";display:inline-block;width:10px;height:10px;border:1px solid var(--cream-70);border-radius:2px;margin-right:8px;vertical-align:-1px}
+  .tree li.dir::before{background:var(--cream-70)}
+  .tree li span{color:var(--cream-70);font-family:"Figtree",sans-serif;font-size:13px;margin-left:8px;white-space:normal}
+  .drawer .close{all:unset;position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid var(--cream);display:grid;place-items:center;cursor:pointer;font-size:18px;color:var(--cream)}
+  .drawer .close:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+
+  .cursor{position:fixed;left:0;top:0;width:26px;height:26px;pointer-events:none;z-index:50;opacity:0;transform:translate(-3px,-23px) rotate(-30deg);mix-blend-mode:difference}
+  footer{max-width:1100px;margin:0 auto;padding:96px 24px 40px;display:flex;justify-content:space-between;gap:var(--gap);flex-wrap:wrap}
+  footer a{text-decoration:underline;text-underline-offset:4px}
+
+  @media (prefers-reduced-motion:no-preference){
+    .tip .card{transition:opacity .2s,transform .2s cubic-bezier(.2,.7,.2,1)}
+    .tape::after{animation:glint 7s ease-in-out infinite}
+    .note{animation:breathe 9s ease-in-out infinite}
+  }
+  @keyframes glint{0%,82%{left:-40px}100%{left:130px}}
+  @keyframes breathe{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(-1.5deg) translateY(1px)}}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .cathedral{min-height:0;padding:96px 20px 40px}
+    .void{min-height:0}
+    .note .w{clip-path:none!important}
+    .pen,.scrollcue,.pill,.cursor{display:none}
+    .drawer .panel{transform:none}
+    .file{transform:rotateY(-14deg) rotateX(6deg)}
+  }
+  @media (pointer:fine){body.inkcursor,body.inkcursor a,body.inkcursor button{cursor:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Page">
+  <a class="mark" href="#cathedral">Squires</a>
+  <ul>
+    <li><a href="#cathedral" data-nav="cathedral">Note</a></li>
+    <li><a href="#file" data-nav="file">Day one</a></li>
+    <li><a href="#go" data-nav="go">Say go</a></li>
+    <li><a href="#folder" data-nav="folder">The folder</a></li>
+  </ul>
+  <a class="navcta" href="#ask">Get the file</a>
+</nav>
+
+<section class="cathedral" id="cathedral">
+  <span class="ring" aria-hidden="true"></span>
+  <span class="serial label dim" aria-hidden="true">One file · CLAUDE.md</span>
+  <article class="note" id="note" aria-label="A note left on the counter">
+    <span class="tape" aria-hidden="true"></span>
+    <p class="big"><span class="w" data-w>Hi. I'm the new hire.</span></p>
+    <p><span class="w" data-w>I start whenever you say hello. Strange for someone you haven't met, so here's the deal.</span></p>
+    <p><span class="w" data-w>I'll spend about an hour asking about the business the way you'd tell anyone on their first day. What happens every week. What costs you the most. Where everything lives. What you'd never want me doing on my own.</span></p>
+    <p><span class="w" data-w>Then I'll connect to the tools you already use, build my own notes in this folder, and do one real job with you before the hour's up.</span></p>
+    <p><span class="w" data-w>That's only day one. Every job after it, I get better at yours, and if you fix me once, it stays fixed. Every go you give me is trust earned. One day you'll hand me the keys. Until then, I ask.</span></p>
+    <p><span class="w" data-w>Nothing gets sent, posted, or paid for while we do it. I draft. You say go.</span></p>
+    <p class="sig"><span class="w" data-w>— Squires <span style="font-weight:500;font-size:.78em">(call me what you like)</span></span></p>
+    <span class="pen" id="pen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21l3.5-1 11-11-2.5-2.5-11 11L3 21z" fill="#382416"/><path d="M15 6.5l2.5 2.5 2-2a1.8 1.8 0 0 0 0-2.5 1.8 1.8 0 0 0-2.5 0l-2 2z" fill="#382416"/></svg></span>
+  </article>
+  <span class="scrollcue label dim" id="cue">Scroll to write. Scroll back to unwrite.</span>
+</section>
+
+<div class="cta-wrap" id="ask">
+  <h1 id="h1">Get the file.</h1>
+  <div class="actions">
+    <a class="cta" href="#folder" id="get">Get the file</a>
+    <button type="button" class="link" id="open">See what's in the folder</button>
+  </div>
+  <p class="sub">One file. About an hour. Nothing sent or paid for while you set it up.</p>
+</div>
+
+<section class="void" id="file">
+  <div class="lead"><span class="label dim">Day one</span><h2 class="h" data-h>It is hired, not installed.</h2></div>
+  <div class="stage" aria-hidden="true">
+    <div class="file" id="fileobj"><span class="label">CLAUDE.md</span><span class="lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="foot">— Squires</span></div>
+    <div class="ground"></div>
+  </div>
+  <div class="copy">
+    <p>Squires is one file. Put it in an empty folder, open Claude Code, and say hello. In about an hour you have an employee that knows your business, is connected to the tools you already use, and has done one real job with you.</p>
+    <p>You name it. It has a first day.</p>
+  </div>
+</section>
+
+<section class="void two" id="go">
+  <div class="lead"><span class="label dim">Trust</span><h2 class="h" data-h>It drafts. You say go.</h2></div>
+  <div class="copy">
+    <p>Everything starts as a draft, and it acts only when you <span class="tip" tabindex="0" role="button" aria-describedby="tipc">say go<span class="card" id="tipc" role="tooltip"><span class="label">Go</span><hr class="dash">"Go" is a word you type in the conversation, for one item at a time. It is the only thing that turns a draft into a sent email, an updated record, or a paid invoice.</span></span>. After you've said go to the same thing a few times, you can tell it to just handle those. Money leaving never moves up that ladder.</p>
+    <ul class="rows" aria-label="The trust ladder">
+      <li><span class="label">I ask</span><p>Every item starts as a draft. Nothing moves until you've read it.</p></li>
+      <li><span class="label">You say go</span><p>One word, one item at a time. The only thing that sends, posts, or pays.</p></li>
+      <li><span class="label">Just handle those</span><p>After a few goes on the same thing, you can tell it to stop asking for that one.</p></li>
+      <li><span class="label ember">Money leaving</span><p>Never climbs this ladder. It stays at "I ask" for good.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="void two" id="folder">
+  <div class="lead"><span class="label dim">The folder</span><h2 class="h" data-h>Everything it knows is in that folder.</h2></div>
+  <div class="copy">
+    <p>In plain files you can open and read. Fix something once and it sticks. No app, no dashboard, no account with us.</p>
+    <button type="button" class="ghost" id="open2">See what's in the folder</button>
+  </div>
+</section>
+
+<div class="steps">
+  <ul class="rows" aria-label="How to start">
+    <li><span class="label dim">01</span><p>Make a new empty folder. Name it after your business.</p></li>
+    <li><span class="label dim">02</span><p>Put the file in it. It's called <code>CLAUDE.md</code>. Don't rename it.</p></li>
+    <li><span class="label dim">03</span><p>Open Claude Code, pick that folder, and say hello. Have your usual tools logged in. Plan on about an hour.</p></li>
+  </ul>
+</div>
+<p class="fine">Needs Claude Code on your computer. Price <span>not set yet</span>; this is a placeholder, not a price.</p>
+
+<footer class="label dim"><span>Squires · <a href="https://SquiresDesk.com">SquiresDesk.com</a></span><span>A note from the new hire</span></footer>
+
+<div class="pill" id="pill" aria-hidden="true"><span>Ready when you are.</span><a href="#ask" id="pillcta">Get the file</a></div>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dt" aria-hidden="true">
+  <div class="bg" id="dbg"></div>
+  <div class="panel" id="dpanel">
+    <button class="close" id="close" type="button" aria-label="Close">×</button>
+    <span class="label dim">The folder</span>
+    <h2 class="h" id="dt" style="margin-top:10px">What's in it</h2>
+    <p class="intro">After the first hour. You start with one file; it builds the rest. Every one of these is plain text you can open.</p>
+    <ul class="tree">
+      <li>CLAUDE.md <span>who you are, its rules, where things go</span></li>
+      <li>MEMORY.md <span>what it knows about the business</span></li>
+      <li class="dir">Orders/ <span>an area, named in your words</span></li>
+      <li style="--d:1">CLAUDE.md <span>what lives here, what it may do</span></li>
+      <li style="--d:1">MEMORY.md <span>facts about orders, dated</span></li>
+      <li class="dir">Clients/</li>
+      <li class="dir">Money/</li>
+      <li class="dir">00_Resources/</li>
+      <li style="--d:1">voice.md <span>how you write, in your own examples</span></li>
+      <li class="dir">.claude/</li>
+      <li class="dir" style="--d:1">skills/ <span>its routines, one folder each</span></li>
+      <li class="dir" style="--d:1">rules/ <span>standing checks per area</span></li>
+      <li class="dir" style="--d:1">state/ <span>setup progress, the ledger</span></li>
+    </ul>
+  </div>
+</div>
+<span class="cursor" id="cur" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" width="26" height="26"><path d="M3 21l3.5-1 11-11-2.5-2.5-11 11L3 21z" fill="#FFEDD7"/><path d="M15 6.5l2.5 2.5 2-2a1.8 1.8 0 0 0 0-2.5 1.8 1.8 0 0 0-2.5 0l-2 2z" fill="#FFEDD7"/></svg></span>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  (function(){
+    var okMotion=!window.matchMedia||!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var G=window.gsap&&okMotion?window.gsap:null;
+    var ws=Array.prototype.slice.call(document.querySelectorAll("[data-w]")),pen=document.getElementById("pen"),note=document.getElementById("note"),cue=document.getElementById("cue");
+
+    if(G&&window.ScrollTrigger){
+      G.registerPlugin(ScrollTrigger);
+      /* The pen writes the note as you scroll. The first line is written on load, so the page is never blank; pull back and it unwrites. */
+      var lens=ws.map(function(w){return w.textContent.length}),total=lens.slice(1).reduce(function(a,b){return a+b},0);
+      var st={p:0};
+      function paint(){
+        var acc=0,budget=st.p*total;
+        var nr=note.getBoundingClientRect();
+        var penPlaced=false;
+        for(var i=1;i<ws.length;i++){
+          var el=ws[i],L=lens[i],k=Math.max(0,Math.min(1,(budget-acc)/L));acc+=L;
+          el.style.clipPath="inset(0 "+((1-k)*100).toFixed(2)+"% 0 0)";
+          if(!penPlaced&&k>0&&k<1){var r=el.getBoundingClientRect();pen.style.left=(r.left-nr.left+k*r.width)+"px";pen.style.top=(r.top-nr.top+r.height*(0.15+0.75*k))+"px";penPlaced=true}
+        }
+        pen.style.opacity=penPlaced?"1":"0";
+        cue.style.opacity=st.p>.02?"0":"1";
+      }
+      G.set(ws.slice(1),{clipPath:"inset(0 100% 0 0)"});
+      G.from(ws[0],{clipPath:"inset(0 100% 0 0)",duration:1.1,ease:"none",delay:.3});
+      /* If the note is taller than the screen, pin from its bottom edge so the whole note is on screen while the pen writes. */
+      var cath=document.getElementById("cathedral");
+      ScrollTrigger.create({trigger:cath,start:function(){return cath.offsetHeight>window.innerHeight?"bottom bottom":"top top"},end:"+=260%",pin:true,pinSpacing:true,scrub:.35,anticipatePin:1,invalidateOnRefresh:true,onUpdate:function(s){st.p=s.progress;paint()}});
+      paint();
+
+      /* The ask is the headline: each letter thickens from thin to medium as it lands. */
+      var h1=document.getElementById("h1"),txt=h1.textContent;h1.textContent="";
+      txt.split("").forEach(function(ch){var s=document.createElement("span");s.textContent=ch===" "?" ":ch;h1.appendChild(s)});
+      G.fromTo("#h1 span",{fontVariationSettings:'"wght" 300'},{fontVariationSettings:'"wght" 500',duration:.7,stagger:.035,ease:"power2.out",scrollTrigger:{trigger:"#ask",start:"top 75%",toggleActions:"play none none reverse"}});
+      /* Section headings arrive the same way, as one block. Readable thin, settled medium. */
+      document.querySelectorAll("[data-h]").forEach(function(h){G.fromTo(h,{fontVariationSettings:'"wght" 300'},{fontVariationSettings:'"wght" 500',duration:.9,ease:"power2.out",scrollTrigger:{trigger:h,start:"top 80%",toggleActions:"play none none reverse"}})});
+
+      /* The file turns as you pass it. Transforms only. */
+      var fo=document.getElementById("fileobj");
+      G.fromTo(fo,{rotateY:-34,rotateX:14,y:16},{rotateY:18,rotateX:-6,y:-16,ease:"none",scrollTrigger:{trigger:"#file",start:"top bottom",end:"bottom top",scrub:.6}});
+
+      /* Nav: dashed underline follows the section in view. */
+      var links={};document.querySelectorAll("[data-nav]").forEach(function(a){links[a.getAttribute("data-nav")]=a});
+      ["cathedral","file","go","folder"].forEach(function(id){ScrollTrigger.create({trigger:"#"+id,start:"top 50%",end:"bottom 50%",onToggle:function(s){if(s.isActive){for(var k in links)links[k].classList.toggle("on",k===id)}}})});
+
+      /* Magnetic pill button. */
+      var cta=document.getElementById("get"),mx=G.quickTo(cta,"x",{duration:.3,ease:"power3"}),my=G.quickTo(cta,"y",{duration:.3,ease:"power3"});
+      /* Sticky pill: appears once the note is written and you scroll back up. */
+      var pill=document.getElementById("pill"),on=false;
+      ScrollTrigger.create({start:"top -120%",end:"max",onUpdate:function(s){var want=s.direction===-1;if(want!==on){on=want;pill.setAttribute("aria-hidden",want?"false":"true");G.to(pill,{y:want?0:"120%",xPercent:-50,duration:.35,ease:"power3.out"})}},onLeaveBack:function(){on=false;pill.setAttribute("aria-hidden","true");G.to(pill,{y:"120%",xPercent:-50,duration:.3})}});
+      G.set(pill,{xPercent:-50,y:"120%"});
+      /* Ink cursor on fine pointers: the cursor is the pen. */
+      var cur=document.getElementById("cur"),cx=G.quickTo(cur,"x",{duration:.18,ease:"power3"}),cy=G.quickTo(cur,"y",{duration:.18,ease:"power3"});
+      if(window.matchMedia("(pointer:fine)").matches){
+        document.body.classList.add("inkcursor");
+        document.addEventListener("pointermove",function(e){cur.style.opacity="1";cx(e.clientX);cy(e.clientY);
+          var r=cta.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);if(Math.hypot(dx,dy)<120){mx(dx*.3);my(dy*.3)}else{mx(0);my(0)}});
+        document.addEventListener("pointerleave",function(){cur.style.opacity="0"});
+      }
+    }
+
+    /* Drawer: what's in the folder. */
+    var drawer=document.getElementById("drawer"),panel=document.getElementById("dpanel"),closeBtn=document.getElementById("close"),last=null;
+    function openD(){last=document.activeElement;drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");if(G){G.fromTo(panel,{x:"100%"},{x:0,duration:.45,ease:"power3.out"})}else{panel.style.transform="none"}closeBtn.focus()}
+    function closeD(){function done(){drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");if(last)last.focus()}if(G){G.to(panel,{x:"100%",duration:.3,ease:"power3.in",onComplete:done})}else{done()}}
+    document.getElementById("open").addEventListener("click",openD);document.getElementById("open2").addEventListener("click",openD);
+    closeBtn.addEventListener("click",closeD);document.getElementById("dbg").addEventListener("click",closeD);
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&drawer.classList.contains("open"))closeD()});
+    /* Tooltip on touch: tap toggles. */
+    var tip=document.querySelector(".tip");tip.addEventListener("click",function(){tip.classList.toggle("on")});tip.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tip.classList.toggle("on")}});
+
+    function soon(el){var o=el.textContent;el.textContent="Coming soon";setTimeout(function(){el.textContent=o},1600)}
+    document.getElementById("get").addEventListener("click",function(e){e.preventDefault();soon(this)});
+    document.getElementById("pillcta").addEventListener("click",function(e){e.preventDefault();soon(this)});
+  })();
+</script>
+</body>
+</html>
